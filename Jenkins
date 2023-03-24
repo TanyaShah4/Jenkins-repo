@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+    environment {
+        name = 'tanya'
+    }
+    parameters {
+        string(name: 'person', defaultValue: 'tanya shah', description: "who are you?" )
+        booleanParam(name: 'isFemale', defaultValue: 'true', description: "")
+        choice(name: 'city', choices: ['jaipur', 'mumbai', 'delhi'], description: "")
+    }
+
+    stages {
+        stage('run a command') {
+            steps {
+                sh 'pwd'
+                sh 'whoami'
+                sh 'cal 2023'
+            }
+        }
+        stage('test') {
+            steps {
+                echo 'test'
+            }
+        }
+        stage('environment variable') {
+            environment {
+                username = 'myusername'
+            }
+            steps {
+                sh 'echo "${BUILD_ID}"'
+                sh 'echo "${name}"'
+                sh 'echo "${username}"'
+            }
+        }
+        stage('parameters') {
+            steps {
+                sh 'echo "${name}"'
+                sh 'echo "${person}"'
+            }
+        }
+        stage('continue ?') {
+            input {
+                message "should we continue?"
+                ok "yes we should"
+            }
+            steps {
+                echo 'deploy to prod'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'i will always say hello'
+        }
+        failure {
+            echo 'failure'
+        }
+        success {
+            echo 'success'
+        }
+    }
+}
